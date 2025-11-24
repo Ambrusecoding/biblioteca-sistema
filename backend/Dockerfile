@@ -18,7 +18,8 @@ WORKDIR /app
 # Copia las dependencias preinstaladas (incluyendo node_modules)
 COPY --from=deps /app/node_modules ./node_modules
 # Copia el código fuente
-COPY . .
+# --- COMENTARIO PARA FORZAR INVALIDACIÓN DE CACHÉ DE RENDER (2025-11-24) ---
+COPY . . 
 
 # SOLUCIÓN FINAL: Inyecta una URL DUMMY temporal para satisfacer el prisma.config.ts.
 # Esto permite que el comando 'generate' se complete sin la URL de Render.
@@ -28,7 +29,7 @@ RUN DATABASE_URL="postgresql://user:password@localhost:5432/dummy" npx prisma ge
 RUN npm run build
 
 # 4. ETAPA DE PRODUCCIÓN (FINAL): Imagen ligera para ejecución
-FROM base AS final
+FROM node:20-slim AS final
 WORKDIR /app
 
 # Copia solo los archivos de producción: compilados (dist) y dependencias
