@@ -1,20 +1,20 @@
-import { FC, ReactNode } from "react"; // Importar FC y ReactNode como tipos
+// src/components/atoms/Title/Title.tsx
+
+import React, { FC, ReactNode } from "react"; // 🚨 Cambiar a importación de valor (sin el 'import type')
 import "./Title.css";
 
-// Definimos la interfaz (no necesitas HTMLAttributes si no usas props como onClick, style, etc.)
+// El resto del código es correcto
 interface TitleProps {
-  children: ReactNode; // ReactNode es suficiente si está importado
+  children: ReactNode;
   level?: 1 | 2 | 3 | 4 | 5 | 6;
   className?: string;
 }
 
-// Usamos FC<TitleProps> para tipar la función
 export const Title: FC<TitleProps> = ({
   children,
   level = 1,
   className = "",
 }) => {
-  // Cast estricto para la etiqueta dinámica (¡Esto es correcto!)
   const HeadingTag = `h${level}` as keyof JSX.IntrinsicElements;
 
   return (
