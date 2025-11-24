@@ -1,9 +1,8 @@
 // src/components/atoms/Title/Title.tsx
 
-import React, { FC, ReactNode } from "react"; // 🚨 Cambiar a importación de valor (sin el 'import type')
+import type { FC, ReactNode } from "react";
 import "./Title.css";
 
-// El resto del código es correcto
 interface TitleProps {
   children: ReactNode;
   level?: 1 | 2 | 3 | 4 | 5 | 6;
@@ -15,7 +14,8 @@ export const Title: FC<TitleProps> = ({
   level = 1,
   className = "",
 }) => {
-  const HeadingTag = `h${level}` as keyof JSX.IntrinsicElements;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const HeadingTag = `h${level}` as any;
 
   return (
     <HeadingTag className={`title title-${level} ${className}`}>
