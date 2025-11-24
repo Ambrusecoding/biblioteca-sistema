@@ -1,5 +1,5 @@
 # Etapa 1: Construcción
-FROM node:18-alpine AS builder
+FROM node:20-alpine AS builder # 🚨 CORRECCIÓN 1: Cambiar a Node 20
 
 WORKDIR /app
 
@@ -20,7 +20,7 @@ RUN npx prisma generate
 RUN npm run build
 
 # Etapa 2: Producción
-FROM node:18-alpine
+FROM node:20-alpine # 🚨 CORRECCIÓN 2: Cambiar a Node 20
 
 WORKDIR /app
 
@@ -46,5 +46,3 @@ ENV PORT=3000
 
 # Comando para iniciar la aplicación
 CMD ["node", "dist/main.js"]
-
-
