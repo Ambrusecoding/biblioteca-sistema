@@ -1,50 +1,45 @@
-# Etapa 1: Construcción
-# 🚨 CORRECCIÓN 1: Cambiar a Node 20
-FROM node:20-alpine AS builder 
-
+# 1. ETAPA BASE: Define la imagen de Node LTS (estable)
+FROM node:20-slim AS base
+# Define el directorio de trabajo dentro del contenedor
 WORKDIR /app
 
-# Copiar archivos de dependencias
-COPY package*.json ./
-COPY prisma ./prisma/
+# 2. ETAPA DE DEPENDENCIAS: Instala solo las librerías
+FROM base AS deps
+WORKDIR /app
+# Copia solo los archivos de configuración de NPM
+COPY package.json package-lock.json ./
 
-# Instalar dependencias
-RUN npm i --legacy-peer-deps
+# RUN: Instala las dependencias, ignorando los scripts (incluido el generate de Prisma)
+RUN npm install --ignore-scripts
 
-# Copiar código fuente
+# 3. ETAPA DE CONSTRUCCIÓN (BUILD): Compila el código
+FROM base AS build
+WORKDIR /app
+# Copia las dependencias preinstaladas (incluyendo node_modules)
+COPY --from=deps /app/node_modules ./node_modules
+# Copia el código fuente
 COPY . .
 
-# Generar Prisma Client
-RUN npx prisma generate
+# SOLUCIÓN FINAL: Inyecta una URL DUMMY temporal para satisfacer el prisma.config.ts.
+# Esto permite que el comando 'generate' se complete sin la URL de Render.
+RUN DATABASE_URL="postgresql://user:password@localhost:5432/dummy" npx prisma generate --schema prisma/schema.prisma
 
-# Construir la aplicación
+# Ahora sí, compila la aplicación NestJS
 RUN npm run build
 
-# Etapa 2: Producción
-# 🚨 CORRECCIÓN 2: Cambiar a Node 20
-FROM node:20-alpine 
-
+# 4. ETAPA DE PRODUCCIÓN (FINAL): Imagen ligera para ejecución
+FROM base AS final
 WORKDIR /app
 
-# Instalar solo dependencias de producción
-COPY package*.json ./
-COPY prisma ./prisma/
+# Copia solo los archivos de producción: compilados (dist) y dependencias
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=build /app/dist ./dist
 
-RUN npm ci --only=production && \
-    npx prisma generate
+# Copia el esquema de Prisma (necesario para migrate deploy en runtime)
+COPY prisma ./prisma/ 
 
-# Copiar archivos construidos desde la etapa de builder
-COPY --from=builder /app/dist ./dist
-
-# Crear directorio para la base de datos
-RUN mkdir -p ./prisma && chmod 777 ./prisma
-
-# Exponer el puerto
+# Establece el puerto de escucha
 EXPOSE 3000
 
-# Variable de entorno por defecto
-ENV NODE_ENV=production
-ENV PORT=3000
-
-# Comando para iniciar la aplicación
-CMD ["node", "dist/main.js"]
+# Comando de inicio: Utiliza el script 'start:render' (migrate deploy && start:prod)
+CMD ["npm", "run", "start:render"]
