@@ -1,21 +1,20 @@
-import React, { FC, ReactNode, HTMLAttributes } from "react";
+import React, { FC, ReactNode } from "react"; // Importar FC y ReactNode como tipos
 import "./Title.css";
 
-// 1. Definimos la interfaz de props
+// Definimos la interfaz (no necesitas HTMLAttributes si no usas props como onClick, style, etc.)
 interface TitleProps {
-  children: React.ReactNode;
-  // level es el número que forma la etiqueta h1, h2, etc.
+  children: ReactNode; // ReactNode es suficiente si está importado
   level?: 1 | 2 | 3 | 4 | 5 | 6;
   className?: string;
 }
 
-// 2. 🚨 Usamos FC<TitleProps> para tipar la función, lo que ayuda a TS a encontrar el contexto JSX.
+// Usamos FC<TitleProps> para tipar la función
 export const Title: FC<TitleProps> = ({
   children,
   level = 1,
   className = "",
 }) => {
-  // 3. El cast estricto es correcto y crucial para usar el tag dinámico.
+  // Cast estricto para la etiqueta dinámica (¡Esto es correcto!)
   const HeadingTag = `h${level}` as keyof JSX.IntrinsicElements;
 
   return (
