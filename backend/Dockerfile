@@ -1,5 +1,6 @@
 # Etapa 1: Construcción
-FROM node:20-alpine AS builder # 🚨 CORRECCIÓN 1: Cambiar a Node 20
+# 🚨 CORRECCIÓN 1: Cambiar a Node 20
+FROM node:20-alpine AS builder 
 
 WORKDIR /app
 
@@ -20,7 +21,8 @@ RUN npx prisma generate
 RUN npm run build
 
 # Etapa 2: Producción
-FROM node:20-alpine # 🚨 CORRECCIÓN 2: Cambiar a Node 20
+# 🚨 CORRECCIÓN 2: Cambiar a Node 20
+FROM node:20-alpine 
 
 WORKDIR /app
 
