@@ -6,24 +6,18 @@ export class PrismaService
   extends PrismaClient
   implements OnModuleInit, OnModuleDestroy
 {
+  // Constructor simplificado para leer DATABASE_URL del entorno.
+  // El error se resuelve porque ya no tiene la propiedad 'datasources'.
+  // En src/prisma/prisma.service.ts (Versión corregida)
   constructor() {
     super({
-      datasources: {
-        db: {
-          // Base de datos en memoria para SQLite
-          // Usa file::memory:?cache=shared para permitir múltiples conexiones
-          url: process.env.DATABASE_URL || 'file::memory:?cache=shared',
-        },
-      },
+      log: ['warn', 'error'],
     });
   }
-
-  // Se ejecuta cuando el módulo se inicializa (conecta a la BD)
   async onModuleInit() {
     await this.$connect();
   }
 
-  // Se ejecuta cuando la aplicación se cierra (limpieza de conexiones)
   async onModuleDestroy() {
     await this.$disconnect();
   }

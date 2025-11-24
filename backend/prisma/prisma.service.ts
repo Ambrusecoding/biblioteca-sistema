@@ -11,7 +11,7 @@ export class PrismaService
   // En src/prisma/prisma.service.ts (Versión corregida)
   constructor() {
     super({
-      log: ['warn', 'error'], // <-- La primera propiedad está en la línea 11 de la versión corregida
+      log: ['warn', 'error'],
     });
   }
   async onModuleInit() {
