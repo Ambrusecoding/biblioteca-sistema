@@ -9,7 +9,9 @@
     
 "types": ["vite/client", "react", "react-dom"],    
     "skipLibCheck": true,
-
+    
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "moduleResolution": "node", 
     
     "allowImportingTsExtensions": true,
