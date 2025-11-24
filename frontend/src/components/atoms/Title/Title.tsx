@@ -1,4 +1,4 @@
-import React, { FC, ReactNode } from "react"; // Importar FC y ReactNode como tipos
+import { FC, ReactNode } from "react"; // Importar FC y ReactNode como tipos
 import "./Title.css";
 
 // Definimos la interfaz (no necesitas HTMLAttributes si no usas props como onClick, style, etc.)
